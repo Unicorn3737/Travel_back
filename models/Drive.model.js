@@ -12,7 +12,7 @@ const driveSchema = new Schema({
     type: String,
   },
   days: {
-    type: String,
+    type: Date,
     required: true,
   },
   transport: {
@@ -20,10 +20,6 @@ const driveSchema = new Schema({
     required: [true, "is the drive completed is required"],
   },
   phone: {
-    type: String,
-    required: true,
-  },
-  email: {
     type: String,
     required: true,
   },
