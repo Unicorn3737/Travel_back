@@ -1,9 +1,13 @@
 const router = require("express").Router();
+const authenticateUser = require("../middlewares/auth.middleware");
 const DriveModel = require("../models/Drive.model");
 //router to create a drive
-router.post("/create", async (req, res) => {
+router.post("/create", authenticateUser, async (req, res) => {
   try {
-    const createdDrive = await DriveModel.create(req.body);
+    const createdDrive = await DriveModel.create({
+      ...req.body,
+      owner: req.payLoad._id,
+    });
     console.log("drive created", createdDrive);
     res.status(201).json({ message: "drive created, good job", createdDrive });
   } catch (error) {

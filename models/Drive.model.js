@@ -16,7 +16,8 @@ const driveSchema = new Schema({
     required: true,
   },
   transport: {
-    type: Boolean,
+    type: String,
+    enum: ["car", "local transport"],
     required: [true, "is the drive completed is required"],
   },
   phone: {
