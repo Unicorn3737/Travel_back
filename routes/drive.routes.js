@@ -29,4 +29,14 @@ router.get("/user-drives/:userId", async (req, res) => {
     res.status(500).json({ message: "Error finding the drives" });
   }
 });
+router.get("/all-drives", async (req, res) => {
+  try {
+    const allDrives = await DriveModel.find().populate("owner");
+    console.log("here are all drives", allDrives);
+    res.status(200).json(allDrives);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error finding the drives" });
+  }
+});
 module.exports = router;
