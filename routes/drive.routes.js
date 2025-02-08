@@ -40,4 +40,15 @@ router.get("/all-drives", async (req, res) => {
     res.status(500).json({ message: "Error finding the drives" });
   }
 });
+//delete one drive based on the id in the url
+router.delete("/delete/:driveId", async (req, res) => {
+  try {
+    const deletedDrive = await DriveModel.findByIdAndDelete(req.params.driveId);
+    console.log("deleted drive", deletedDrive);
+    res.status(200).json(deletedDrive);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error deleting the drive" });
+  }
+});
 module.exports = router;
