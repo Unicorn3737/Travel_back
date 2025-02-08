@@ -3,6 +3,7 @@ const authenticateUser = require("../middlewares/auth.middleware");
 const DriveModel = require("../models/Drive.model");
 //router to create a drive
 router.post("/create", authenticateUser, async (req, res) => {
+  console.log(req.body);
   try {
     const createdDrive = await DriveModel.create({
       ...req.body,
@@ -23,7 +24,7 @@ router.get("/user-drives/:userId", async (req, res) => {
       owner: theUserId,
     }).populate("owner");
     console.log("here are the users drives", allDrivesForOneUser);
-    res.status(200).json({ userDrives: allDrivesForOneUser });
+    res.status(200).json(allDrivesForOneUser);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error finding the drives" });
