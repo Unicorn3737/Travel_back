@@ -3,6 +3,7 @@ const UserModel = require("../models/User.model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authenticateUser = require("../middlewares/auth.middleware");
+const upload = require("../middlewares/cloudinary.middleware");
 
 //create a user route
 router.post("/signup", async (req, res) => {
@@ -35,7 +36,11 @@ router.post("/login", async (req, res) => {
       );
       console.log("does the password match", doesPasswordsMatch);
       if (doesPasswordsMatch) {
-        const data = { _id: foundUser._id, username: foundUser.username };
+        const data = {
+          _id: foundUser._id,
+          username: foundUser.username,
+          profileImage: foundUser.profileImage,
+        };
 
         const authToken = jwt.sign(data, process.env.TOKEN_SECRET, {
           algorithm: "HS256",
@@ -56,6 +61,25 @@ router.post("/login", async (req, res) => {
 //router to verify the token
 router.get("/verify", authenticateUser, async (req, res) => {
   console.log("verify route", req.payLoad);
-  res.status(200).json({ message: "token is valid", currentUser: req.payLoad });
+  const currentUser = await UserModel.findById(req.payLoad._id);
+  res.status(200).json({ message: "token is valid", currentUser });
 });
+router.post(
+  "/profileImage/:userId",
+  upload.single("imageUrl"),
+  async (req, res) => {
+    try {
+      const updateUser = await UserModel.findByIdAndUpdate(
+        req.params.userId,
+        { profileImage: req.file.path },
+        { new: true }
+      );
+      console.log("update drive", updateUser);
+      res.status(200).json(updateUser);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Error logging in the user" });
+    }
+  }
+);
 module.exports = router;

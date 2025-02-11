@@ -51,4 +51,28 @@ router.delete("/delete/:driveId", async (req, res) => {
     res.status(500).json({ message: "Error deleting the drive" });
   }
 });
+router.get("/edit-drive/:driveId", async (req, res) => {
+  try {
+    const editDrive = await DriveModel.findById(req.params.driveId);
+    console.log("edit drive", editDrive);
+    res.status(200).json(editDrive);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error edit the drive" });
+  }
+});
+router.put("/update/:driveId", async (req, res) => {
+  try {
+    const editDrive = await DriveModel.findByIdAndUpdate(
+      req.params.driveId,
+      req.body,
+      { new: true }
+    );
+    console.log("update drive", editDrive);
+    res.status(200).json(editDrive);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error edit the drive" });
+  }
+});
 module.exports = router;
