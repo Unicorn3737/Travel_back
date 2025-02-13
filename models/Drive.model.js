@@ -12,7 +12,7 @@ const driveSchema = new Schema({
     type: String,
   },
   days: {
-    type: Date,
+    type: String,
     required: true,
   },
   transport: {
@@ -28,6 +28,10 @@ const driveSchema = new Schema({
     type: Schema.Types.ObjectId, //this is the _id of a user
     ref: "User",
     required: true,
+  },
+  travelers: {
+    type: [Schema.Types.ObjectId],
+    ref: "User",
   },
 });
 

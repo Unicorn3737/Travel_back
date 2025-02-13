@@ -61,6 +61,18 @@ router.get("/edit-drive/:driveId", async (req, res) => {
     res.status(500).json({ message: "Error edit the drive" });
   }
 });
+router.get("/details/:driveId", async (req, res) => {
+  try {
+    const editDrive = await DriveModel.findById(req.params.driveId).populate(
+      "owner travelers"
+    );
+    console.log("detail drive", editDrive);
+    res.status(200).json(editDrive);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error edit the drive" });
+  }
+});
 router.put("/update/:driveId", async (req, res) => {
   try {
     const editDrive = await DriveModel.findByIdAndUpdate(
@@ -73,6 +85,18 @@ router.put("/update/:driveId", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error edit the drive" });
+  }
+});
+router.get("/join/:userId/:driveId", async (req, res) => {
+  try {
+    const joinDrive = await DriveModel.findByIdAndUpdate(req.params.driveId, {
+      $push: { travelers: req.params.userId },
+    });
+    console.log("join drive", joinDrive);
+    res.status(200).json(joinDrive);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error join the drive" });
   }
 });
 module.exports = router;
