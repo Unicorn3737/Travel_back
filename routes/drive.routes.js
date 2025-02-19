@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const authenticateUser = require("../middlewares/auth.middleware");
 const DriveModel = require("../models/Drive.model");
+const UserModel = require("../models/User.model");
 //router to create a drive
 router.post("/create", authenticateUser, async (req, res) => {
   console.log(req.body);
@@ -23,8 +24,9 @@ router.get("/user-drives/:userId", async (req, res) => {
     const allDrivesForOneUser = await DriveModel.find({
       owner: theUserId,
     }).populate("owner");
+    const currentUser = await UserModel.findById(theUserId).populate("trips");
     console.log("here are the users drives", allDrivesForOneUser);
-    res.status(200).json(allDrivesForOneUser);
+    res.status(200).json({ Drives: allDrivesForOneUser, currentUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error finding the drives" });
@@ -92,8 +94,15 @@ router.get("/join/:userId/:driveId", async (req, res) => {
     const joinDrive = await DriveModel.findByIdAndUpdate(req.params.driveId, {
       $push: { travelers: req.params.userId },
     });
+    const updateUser = await UserModel.findByIdAndUpdate(
+      req.params.userId,
+      {
+        $push: { trips: req.params.driveId },
+      },
+      { new: true }
+    );
     console.log("join drive", joinDrive);
-    res.status(200).json(joinDrive);
+    res.status(200).json({ joinDrive, updateUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error join the drive" });
