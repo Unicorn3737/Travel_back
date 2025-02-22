@@ -108,4 +108,24 @@ router.get("/join/:userId/:driveId", async (req, res) => {
     res.status(500).json({ message: "Error join the drive" });
   }
 });
+
+router.put("/unjoin/:driveId/:userId", async (req, res) => {
+  try {
+    const joinDrive = await DriveModel.findByIdAndUpdate(req.params.driveId, {
+      $pull: { travelers: req.params.userId },
+    });
+    const updateUser = await UserModel.findByIdAndUpdate(
+      req.params.userId,
+      {
+        $pull: { trips: req.params.driveId },
+      },
+      { new: true }
+    );
+    console.log("unjoin drive", joinDrive);
+    res.status(200).json({ joinDrive, updateUser });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error join the drive" });
+  }
+});
 module.exports = router;
